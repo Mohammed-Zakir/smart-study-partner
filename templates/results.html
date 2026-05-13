@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Answer — SmartDocQA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Answer</h1>
+    <a href="{{ url_for('query_bp.home') }}" class="btn btn--outline btn--sm">&#8592; Ask Another</a>
+</div>
+
+<div class="card result-card">
+    <div class="result-section">
+        <div class="result-label">Question</div>
+        <p class="result-question">{{ question }}</p>
+    </div>
+    <div class="result-divider"></div>
+    <div class="result-section">
+        <div class="result-label">Answer</div>
+        <p class="result-answer">{{ answer }}</p>
+    </div>
+</div>
+<div class="answer-box">
+
+    <h2>Answer</h2>
+
+    <p>{{ answer }}</p>
+
+</div>
+{% if contexts %}
+<div class="section-label">Source Contexts used ({{ contexts|length }})</div>
+{% for ctx in contexts %}
+<div class="card context-card">
+    <div class="context-header">
+        <div class="context-badge">Context {{ loop.index }}</div>
+        {% if scores and scores[loop.index0] is defined %}
+        <div class="context-score" title="Relevance score">
+            Relevance: {{ "%.0f"|format(scores[loop.index0] * 100) }}%
+        </div>
+        {% endif %}
+    </div>
+    <p class="context-text">{{ ctx }}</p>
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}

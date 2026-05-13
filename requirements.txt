@@ -1,0 +1,9 @@
+flask
+numpy
+scikit-learn
+sentence-transformers
+transformers
+torch
+pdfplumber
+tqdm
+python-dotenv

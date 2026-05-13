@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Ask a Question — SmartDocQA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Ask a Question</h1>
+    <p class="page-subtitle">Query your uploaded PDF documents using AI-powered search.</p>
+</div>
+
+<div class="card ask-card">
+    <form action="{{ url_for('query_bp.query_document') }}" method="POST" id="ask-form">
+        <div class="form-group">
+            <label class="form-label" for="question">Your Question</label>
+            <textarea
+                id="question"
+                name="question"
+                class="form-textarea"
+                rows="3"
+                placeholder="e.g. What is the main conclusion of the document?"
+required
+>{{ question or '' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn--primary btn--full" id="ask-btn">
+            <span class="btn-text">Get Answer</span>
+            <span class="btn-spinner hidden" id="spinner">&#8987;</span>
+        </button>
+    </form>
+</div>
+
+{% if documents %}
+<div class="section-label">Indexed Documents</div>
+<div class="doc-grid">
+    {% for doc in documents %}
+    <div class="doc-pill">
+        <span class="doc-icon">&#128196;</span>
+        <span class="doc-name" title="{{ doc[1] }}">{{ doc[1] }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">&#128196;</div>
+    <p>No documents uploaded yet.</p>
+    <a href="{{ url_for('upload_bp.upload_file') }}" class="btn btn--outline">Upload a PDF</a>
+</div>
+{% endif %}
+
+<!-- 🔥 GRAPHS SECTION -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% if progress %}
+<div class="card mt-4">
+    <h2 class="section-label">📊 Overall Progress</h2>
+    <canvas id="pieChart" height="120"></canvas>
+</div>
+
+<script>
+    const completed = {{ progress.completed }};
+    const remaining = {{ progress.total }} - {{ progress.completed }};
+
+    new Chart(document.getElementById('pieChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Completed', 'Remaining'],
+            datasets: [{
+                data: [completed, remaining]
+            }]
+        }
+    });
+</script>
+{% endif %}
+
+{% if doc_names %}
+<div class="card mt-4">
+    <h2 class="section-label">📊 Document Analytics</h2>
+    <canvas id="barChart" height="120"></canvas>
+</div>
+
+<script>
+    const labels = {{ doc_names | tojson }};
+    const data = {{ doc_counts | tojson }};
+
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Usage',
+                data: data
+            }]
+        }
+    });
+</script>
+{% endif %}
+{% if answer %}
+<div class="card mt-4">
+    <h2 class="section-label">Answer</h2>
+
+    <div style="
+        background:#111827;
+        padding:20px;
+        border-radius:12px;
+        color:white;
+        line-height:1.7;
+    ">
+        {{ answer }}
+    </div>
+
+    {% if contexts %}
+    <div style="margin-top:20px;">
+        <h3>Relevant Context</h3>
+
+        <ul>
+            {% for context in contexts %}
+            <li style="margin-bottom:10px;">
+                {{ context }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

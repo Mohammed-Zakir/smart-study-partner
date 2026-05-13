@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Register | STUDY PARTNER</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    background:#0b1120;
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    color:white;
+
+    position:relative;
+}
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+
+    height:500px;
+
+    background:rgba(59,130,246,0.18);
+
+    filter:blur(120px);
+
+    top:-120px;
+
+    right:-120px;
+}
+
+.card{
+
+    width:400px;
+
+    background:rgba(30,41,59,0.72);
+
+    backdrop-filter:blur(16px);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    border-radius:30px;
+
+    padding:40px;
+
+    position:relative;
+
+    z-index:2;
+
+    box-shadow:0 10px 40px rgba(0,0,0,0.35);
+}
+
+h1{
+
+    font-size:34px;
+
+    margin-bottom:10px;
+
+    text-align:center;
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    margin-bottom:30px;
+
+    font-size:15px;
+}
+
+input{
+
+    width:100%;
+
+    padding:15px;
+
+    margin-bottom:18px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:16px;
+
+    background:#111827;
+
+    color:white;
+
+    font-size:15px;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    transition:0.3s;
+}
+
+input:focus{
+
+    border-color:#3b82f6;
+
+    box-shadow:0 0 14px rgba(59,130,246,0.25);
+}
+
+button{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:linear-gradient(
+        135deg,
+        #3b82f6,
+        #2563eb
+    );
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+    box-shadow:0 6px 22px rgba(37,99,235,0.35);
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 28px rgba(37,99,235,0.45);
+}
+
+.error{
+
+    margin-top:16px;
+
+    color:#f87171;
+
+    text-align:center;
+}
+
+.bottom{
+
+    margin-top:25px;
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    font-size:14px;
+}
+
+.bottom a{
+
+    color:#60a5fa;
+
+    text-decoration:none;
+
+    font-weight:600;
+}
+
+.bottom a:hover{
+
+    text-decoration:underline;
+}
+
+@media(max-width:500px){
+
+    .card{
+
+        width:92%;
+
+        padding:30px;
+    }
+
+    h1{
+
+        font-size:28px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>🚀 Create Account</h1>
+
+    <p class="subtitle">
+        Join STUDY PARTNER today
+    </p>
+
+    <form method="POST">
+
+        <input
+        type="text"
+        name="username"
+        placeholder="Create Username"
+        required>
+
+        <input
+        type="password"
+        name="password"
+        placeholder="Create Password"
+        required>
+
+        <button type="submit">
+            Create Account
+        </button>
+
+    </form>
+
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <div class="bottom">
+
+        Already have an account?
+
+        <a href="/login">
+            Login
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

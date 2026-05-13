@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Upload PDF — SmartDocQA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Upload Document</h1>
+    <p class="page-subtitle">Upload a PDF to extract text, generate embeddings, and enable Q&amp;A.</p>
+</div>
+
+<div class="card">
+    <form action="{{ url_for('upload_bp.upload_file') }}" method="POST" enctype="multipart/form-data" id="upload-form">
+        <div class="drop-zone" id="drop-zone">
+            <div class="drop-icon">&#128196;</div>
+            <p class="drop-text">Drag &amp; drop a PDF here, or <label for="file" class="drop-browse">browse</label></p>
+            <p class="drop-hint">Only .pdf files are accepted</p>
+            <input type="file" id="file" name="file" accept=".pdf" required class="file-input">
+        </div>
+        <div class="file-preview hidden" id="file-preview">
+            <span class="file-preview-icon">&#128196;</span>
+            <span id="file-preview-name"></span>
+            <button type="button" class="file-clear" id="file-clear">&#x2715;</button>
+        </div>
+        <button type="submit" class="btn btn--primary btn--full" id="upload-btn">
+            Upload &amp; Process
+        </button>
+    </form>
+</div>
+
+{% if documents %}
+<div class="section-label">Uploaded Documents ({{ documents|length }})</div>
+<div class="table-wrap">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>File Name</th>
+                <th>Uploaded At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in documents %}
+            <tr>
+                <td>{{ doc[0] }}</td>
+                <td><span class="doc-icon-sm">&#128196;</span> {{ doc[1] }}</td>
+                <td>{{ doc[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No documents uploaded yet.</p>
+</div>
+{% endif %}
+{% endblock %}

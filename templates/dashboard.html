@@ -1,0 +1,1546 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+
+{% block content %}
+<title>Dashboard | STUDY PARTNER</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+
+    --bg:#020617;
+
+    --sidebar:#0f172a;
+
+    --card:rgba(15,23,42,0.78);
+
+    --primary:#3b82f6;
+
+    --primary2:#2563eb;
+
+    --purple:#8b5cf6;
+
+    --green:#22c55e;
+
+    --text:#f8fafc;
+
+    --muted:#94a3b8;
+
+    --border:rgba(255,255,255,0.08);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    background:
+    radial-gradient(circle at top left,
+    rgba(59,130,246,0.22),
+    transparent 28%),
+
+    radial-gradient(circle at bottom right,
+    rgba(139,92,246,0.18),
+    transparent 28%),
+
+    var(--bg);
+
+    color:var(--text);
+
+    overflow-x:hidden;
+
+    min-height:100vh;
+
+    position:relative;
+}
+
+/* BACKGROUND GLOW */
+body::before{
+    content:"";
+    position:fixed;
+    width:500px;
+    height:500px;
+    background:rgba(59,130,246,0.15);
+    filter:blur(120px);
+    top:-120px;
+    right:-120px;
+    z-index:-1;
+}
+
+/* LAYOUT */
+.container{
+    display:flex;
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:280px;
+    min-width:280px;
+    background:linear-gradient(180deg,#111827,#0f172a);
+    padding:28px;
+    border-right:1px solid var(--border);
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    padding:30px;
+    overflow-x:hidden;
+}
+
+/* HEADINGS */
+h1{
+    font-size:42px;
+    margin-bottom:25px;
+    font-weight:700;
+}
+
+h2{
+    font-size:30px;
+    font-weight:700;
+}
+
+h3{
+    font-size:22px;
+    margin-bottom:15px;
+}
+
+h4{
+    font-size:16px;
+    margin-bottom:8px;
+    color:#dbeafe;
+}
+
+/* GLASS CARDS */
+.card{
+
+    background:var(--card);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:24px;
+
+    padding:24px;
+
+    margin-bottom:22px;
+
+    box-shadow:
+    0 8px 32px rgba(37,99,235,0.12);
+
+    transition:0.3s ease;
+}
+
+.card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 12px 40px rgba(59,130,246,0.18);
+}
+
+.card:hover{
+    transform:translateY(-3px);
+}
+
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.stat{
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(59,130,246,0.85),
+        rgba(139,92,246,0.82)
+    );
+
+    border-radius:22px;
+
+    padding:24px;
+
+    position:relative;
+
+    overflow:hidden;
+
+    min-height:140px;
+
+    box-shadow:
+    0 8px 24px rgba(59,130,246,0.22);
+}
+
+.stat::before{
+    content:"";
+    position:absolute;
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    top:-50px;
+    right:-50px;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+    margin-bottom:20px;
+}
+
+/* INPUTS */
+input{
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:#0b1120;
+    color:white;
+    outline:none;
+    transition:0.3s;
+    font-size:15px;
+}
+
+input:focus{
+    border-color:#3b82f6;
+    box-shadow:0 0 12px rgba(59,130,246,0.35);
+}
+
+/* BUTTONS */
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    font-size:15px;
+    box-shadow:0 5px 18px rgba(37,99,235,0.35);
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 25px rgba(37,99,235,0.45);
+}
+
+/* FORMS */
+.form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr auto;
+    gap:15px;
+    align-items:end;
+}
+
+/* TASKS */
+/* TASKS */
+
+.task{
+
+    background:#0b1120;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    padding:18px;
+
+    border-radius:18px;
+
+    margin:12px 0;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:12px;
+
+    transition:0.3s ease;
+}
+
+.task:hover{
+
+    transform:translateY(-2px);
+
+    border-color:#3b82f6;
+}
+
+.task strong{
+
+    color:#60a5fa;
+}
+
+/* PROGRESS */
+.progress-bar{
+    height:10px;
+    background:#1e293b;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-fill{
+    height:10px;
+    background:linear-gradient(90deg,#22c55e,#4ade80);
+}
+
+/* PDF */
+#pdfAnswer{
+    margin-top:18px;
+    padding:18px;
+    border-radius:16px;
+    background:#0b1120;
+    border:1px solid rgba(255,255,255,0.08);
+    line-height:1.7;
+}
+
+/* CANVAS */
+canvas{
+    width:100% !important;
+    height:320px !important;
+}
+
+/* LINKS */
+a{
+    color:#60a5fa;
+    text-decoration:none;
+}
+
+a:hover{
+    text-decoration:underline;
+}
+/* =========================
+   TIMETABLE GRID
+========================= */
+.day-navigation{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:18px;
+
+    margin-bottom:20px;
+}
+
+.day-navigation button{
+
+    width:auto;
+
+    padding:10px 18px;
+
+    border-radius:12px;
+}
+
+.day-navigation h2{
+
+    font-size:24px;
+
+    margin:0;
+}
+.timetable-grid{
+
+    display:grid !important;
+
+    grid-template-columns:
+    140px repeat(3,1fr);
+
+    gap:16px;
+
+    width:100%;
+
+    margin-top:20px;
+}
+
+.timetable-header{
+
+    background:rgba(59,130,246,0.18);
+
+    padding:12px;
+
+    border-radius:16px;
+
+    text-align:center;
+
+    font-weight:700;
+
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.timetable-cell{
+
+    background:#0b1120;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    border-radius:14px;
+
+    padding:12px;
+
+    min-height:90px;
+
+    transition:0.3s ease;
+
+    overflow:hidden;
+}
+
+.timetable-cell:hover{
+
+    transform:translateY(-3px);
+
+    border-color:#3b82f6;
+}
+
+.slot-title{
+
+    color:#94a3b8;
+
+    font-size:11px;
+
+    margin-bottom:6px;
+}
+
+.subject-tag{
+
+    display:inline-block;
+
+    padding:4px 10px;
+
+    border-radius:999px;
+
+    font-size:11px;
+
+    font-weight:600;
+
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #3b82f6
+    );
+
+    margin-bottom:12px;
+}
+.high{
+    background:linear-gradient(
+        135deg,
+        #ef4444,
+        #dc2626
+    );
+}
+
+.medium{
+    background:linear-gradient(
+        135deg,
+        #f59e0b,
+        #d97706
+    );
+}
+
+.low{
+    background:linear-gradient(
+        135deg,
+        #22c55e,
+        #16a34a
+    );
+}
+.deadline{
+
+    margin-top:12px;
+
+    font-size:12px;
+
+    color:#fca5a5;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+    .timetable-grid{
+
+        grid-template-columns:1fr;
+    }
+}
+
+/* MOBILE */
+@media(max-width:1100px){
+
+    .container{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+        min-width:100%;
+        border-right:none;
+        border-bottom:1px solid var(--border);
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .form-row{
+        grid-template-columns:1fr;
+    }
+
+    .main{
+        padding:18px;
+    }
+
+    h1{
+        font-size:34px;
+    }
+}
+
+</style>
+
+
+<div class="container">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <h2>👤 {{ user }}</h2>
+
+    <br>
+
+    <div class="card">
+
+        <h3>🔥 Study Streak</h3>
+
+        <h1 id="streak">0</h1>
+
+    </div>
+
+    <div class="card">
+
+        <h3>📊 Progress</h3>
+
+        <div class="progress-bar">
+            <div id="bar" class="progress-fill"></div>
+        </div>
+
+        <br>
+
+        <p id="text"></p>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h1>📘 STUDY PARTNER </h1>
+
+<!-- STATS -->
+<div class="stats">
+
+    <div class="stat">
+        <h4>Total Tasks</h4>
+        <h2 id="total">0</h2>
+    </div>
+
+    <div class="stat">
+        <h4>Completed</h4>
+        <h2 id="done">0</h2>
+    </div>
+
+    <div class="stat">
+        <h4>Efficiency</h4>
+        <h2 id="eff">0%</h2>
+    </div>
+
+    <div class="stat">
+        <h4>Pending</h4>
+        <h2 id="pending">0</h2>
+    </div>
+
+</div>
+
+<!-- RESOURCE FINDER -->
+<div class="card">
+
+    <h3>🔎 Resource Finder</h3>
+
+    <div class="form-row">
+
+        <input id="topic" placeholder="Enter topic">
+
+        <button onclick="getResources()">
+            Search Resources
+        </button>
+
+    </div>
+
+    <br>
+
+    <div id="resources"></div>
+
+</div>
+
+<!-- STUDY PLAN -->
+<div class="card">
+
+    <h3>🧠 AI Study Planner</h3>
+
+    <div class="form-row">
+
+    <input id="subjects" placeholder="DSA, Java, Python">
+
+    <input id="hours" type="number" placeholder="Total study hours">
+
+    <input id="days" type="number" placeholder="Days">
+
+</div>
+
+<br>
+
+<div class="form-row">
+
+    <input id="toughest" placeholder="Toughest subject">
+
+    <select id="difficulty" style="
+        width:100%;
+        padding:14px;
+        border-radius:14px;
+        background:#0b1120;
+        color:white;
+        border:1px solid rgba(255,255,255,0.08);
+    ">
+
+        <option value="Easy">Easy</option>
+
+        <option value="Medium">Medium</option>
+
+        <option value="Hard">Hard</option>
+
+    </select>
+
+    <button onclick="gen()">
+    Generate Smart Plan
+</button>
+
+</div>
+
+</div>
+
+
+<!-- CHARTS -->
+<div class="grid">
+
+    <div class="card">
+
+        <h3>📈 Activity Analytics</h3>
+
+        <canvas id="chart"></canvas>
+
+    </div>
+
+    <div class="card">
+
+        <h3>📊 Subject Analytics</h3>
+
+        <canvas id="subjectChart"></canvas>
+
+    </div>
+
+</div>
+<!-- VISUAL TIMETABLE -->
+
+<div class="card">
+
+    <h3>🗓 Weekly Study Timetable</h3>
+
+    <div class="day-navigation">
+
+        <button onclick="changeDay(-1)">
+            ⬅ Previous Day
+        </button>
+
+        <h2 id="dayTitle">
+            Monday
+        </h2>
+
+        <button onclick="changeDay(1)">
+            Next Day ➡
+        </button>
+
+    </div>
+
+    <div id="timetable"></div>
+
+</div>
+<!-- TASKS + INSIGHTS -->
+<!-- PREMIUM POMODORO -->
+
+<div class="card">
+
+    <h3>⏳ Focus Timer</h3>
+
+    <div class="form-row">
+
+        <input
+            type="number"
+            id="customMinutes"
+            placeholder="Enter minutes"
+            value="25"
+        >
+
+        <button onclick="setCustomTimer()">
+            Set Timer
+        </button>
+
+    </div>
+
+    <br>
+
+    <div style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        flex-direction:column;
+        padding:20px;
+    ">
+
+        <div id="timerCircle" style="
+            width:220px;
+            height:220px;
+            border-radius:50%;
+            background:linear-gradient(135deg,#2563eb,#3b82f6);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            box-shadow:0 0 40px rgba(59,130,246,0.35);
+            margin-bottom:20px;
+            transition:0.3s;
+        ">
+
+            <h1 id="timer" style="
+                font-size:54px;
+                color:white;
+            ">
+                25:00
+            </h1>
+
+        </div>
+
+        <div class="form-row">
+
+            <button onclick="startTimer()">
+                ▶ Start
+            </button>
+
+            <button onclick="pauseTimer()">
+                ⏸ Pause
+            </button>
+
+            <button onclick="resetTimer()">
+                🔄 Reset
+            </button>
+
+        </div>
+
+        <br>
+
+        <p style="
+            text-align:center;
+            font-size:16px;
+            color:#94a3b8;
+        ">
+            Sessions Completed:
+            <span id="sessions">0</span>
+        </p>
+
+    </div>
+
+</div>
+<div class="grid">
+
+    <div class="card">
+
+        <h3>✅ Study Tasks</h3>
+
+        <input
+id="taskSearch"
+placeholder="🔍 Search tasks..."
+onkeyup="searchTasks()"
+style="
+margin-bottom:15px;
+">
+
+<div id="tasks"></div>
+
+    </div>
+
+    <div class="card">
+
+        <h3>💡 Smart Insights</h3>
+
+        <p id="insight">Loading...</p>
+
+    </div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+let chart, subjectChart;
+let currentDay = 0;
+const weekDays = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+];
+function load(){
+
+    fetch("/get_progress")
+
+
+    .then(r => r.json())
+
+    .then(d => {
+
+        // =========================
+        // DASHBOARD STATS
+        // =========================
+
+        document.getElementById("bar").style.width =
+        d.percent + "%";
+
+        document.getElementById("text").innerText =
+        d.completed + "/" + d.total +
+        " Tasks Completed";
+
+        document.getElementById("streak").innerText =
+        d.streak;
+
+        document.getElementById("total").innerText =
+        d.total;
+
+        document.getElementById("done").innerText =
+        d.completed;
+
+        document.getElementById("eff").innerText =
+        d.percent + "%";
+
+        document.getElementById("pending").innerText =
+        d.pending;
+
+        // =========================
+        // TASKS
+        // =========================
+
+        let html = "";
+
+        d.tasks
+        .filter(x => x.day === weekDays[currentDay])
+        .slice(0, 3)
+        .forEach((x)=>{
+
+            html += `
+
+            <div class="task">
+
+                <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:flex-start;
+                gap:12px;
+                width:100%;
+                ">
+
+                    <div>
+
+                        <div style="
+                        font-size:26px;
+                        font-weight:700;
+                        color:#60a5fa;
+                        margin-bottom:10px;
+                        ">
+                            ${x.day}
+                        </div>
+
+                        <div style="
+                        font-size:22px;
+                        font-weight:600;
+                        margin-bottom:10px;
+                        ">
+                            ${x.subject}
+                        </div>
+
+                        <div class="
+                        subject-tag
+                        ${x.priority.toLowerCase()}
+                        ">
+                            ${x.priority}
+                        </div>
+
+                        <div style="
+                        margin-top:14px;
+                        color:#94a3b8;
+                        line-height:1.8;
+                        ">
+
+                            ⏳ ${x.hours} Hours
+
+                            <br>
+
+                            📘 ${x.type}
+
+                            <br>
+
+                            🔥 ${x.difficulty || "Medium"}
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <input
+
+type="checkbox"
+
+${x.completed ? "checked" : ""}
+
+onchange="toggleByTime('${x.created_at}')"
+
+style="
+width:24px;
+height:24px;
+cursor:pointer;
+accent-color:#3b82f6;
+">
+
+                    </div>
+
+                </div>
+
+            </div>
+            `;
+        });
+
+        document.getElementById("tasks").innerHTML =
+        html;
+
+        // =========================
+        // STORE TASKS + TIMETABLE
+        // =========================
+
+        window.currentTasks = d.tasks;
+
+        if(d.timetable && d.timetable.length > 0){
+
+            window.fullTimetable = d.timetable;
+
+            renderTimetable();
+        }
+
+        // =========================
+        // PERFORMANCE CHART
+        // =========================
+
+        fetch("/stats")
+
+        .then(r => r.json())
+
+        .then(d => {
+
+            if(chart) chart.destroy();
+
+            chart = new Chart(
+
+                document.getElementById("chart"),
+
+                {
+
+                    type:"line",
+
+                    data:{
+
+                        labels:d.labels,
+
+                        datasets:[{
+
+                            label:"Performance",
+
+                            data:d.values,
+
+                            borderColor:"#60a5fa",
+
+                            backgroundColor:
+                            "rgba(96,165,250,0.2)",
+
+                            fill:true,
+
+                            tension:0.4
+                        }]
+                    },
+
+                    options:{
+
+                        responsive:true,
+
+                        plugins:{
+                            legend:{
+                                labels:{
+                                    color:"white"
+                                }
+                            }
+                        },
+
+                        scales:{
+
+                            x:{
+                                ticks:{
+                                    color:"white"
+                                }
+                            },
+
+                            y:{
+                                ticks:{
+                                    color:"white"
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+        });
+
+        // =========================
+        // SUBJECT ANALYTICS
+        // =========================
+
+        fetch("/subject_stats")
+
+        .then(r => r.json())
+
+        .then(data => {
+
+            if(subjectChart)
+            subjectChart.destroy();
+
+            subjectChart = new Chart(
+
+                document.getElementById("subjectChart"),
+
+                {
+
+                    type:"doughnut",
+
+                    data:{
+
+                        labels:Object.keys(data),
+
+                        datasets:[{
+
+                            data:Object
+                            .values(data)
+                            .map(v => v.completed),
+
+                            backgroundColor:[
+
+                                "#3b82f6",
+                                "#22c55e",
+                                "#f59e0b",
+                                "#ef4444",
+                                "#8b5cf6"
+                            ]
+                        }]
+                    },
+
+                    options:{
+
+                        plugins:{
+                            legend:{
+                                labels:{
+                                    color:"white"
+                                }
+                            }
+                        }
+                    }
+                }
+            );
+        });
+
+        // =========================
+        // AI INSIGHTS
+        // =========================
+
+        fetch("/insights")
+
+        .then(r => r.json())
+
+        .then(d => {
+
+            document.getElementById("insight")
+            .innerText = d.message;
+        });
+
+    });
+}
+
+function toggle(i){
+
+    fetch("/toggle_task",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            index:i
+        })
+
+    }).then(load);
+}
+function toggleByTime(time){
+
+    fetch("/toggle_by_time",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            created_at:time
+        })
+
+    }).then(load);
+}
+function gen(){
+
+    let s =
+    document.getElementById("subjects")
+    .value
+    .split(",");
+
+    let h =
+    parseInt(
+        document.getElementById("hours").value
+    );
+
+    let d =
+    parseInt(
+        document.getElementById("days").value
+    );
+
+    let toughest =
+    document.getElementById("toughest").value;
+
+    let difficulty =
+    document.getElementById("difficulty").value;
+
+    fetch("/save_plan",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            subjects:s,
+
+            hours:h,
+
+            days:d,
+
+            toughest:toughest,
+
+            difficulty:difficulty
+        })
+
+    }).then(load);
+}
+function getResources(){
+
+    let topic=document.getElementById("topic").value;
+
+    document.getElementById("resources").innerHTML=`
+
+    <p>
+        <a href="https://www.youtube.com/results?search_query=${topic}" target="_blank">
+        🎥 YouTube Tutorials
+        </a>
+    </p>
+
+    <br>
+
+    <p>
+        <a href="https://www.google.com/search?q=${topic}+article" target="_blank">
+        📰 Articles & Blogs
+        </a>
+    </p>
+
+    <br>
+
+    <p>
+        <a href="https://www.google.com/search?q=${topic}+pdf" target="_blank">
+        📚 PDF Notes
+        </a>
+    </p>
+
+    `;
+}
+
+let timer;
+let timeLeft = 1500;
+let running = false;
+let sessions = 0;
+
+function updateTimer(){
+
+    let minutes = Math.floor(timeLeft / 60);
+
+    let seconds = timeLeft % 60;
+
+    seconds = seconds < 10 ? "0"+seconds : seconds;
+
+    document.getElementById("timer").innerText =
+    `${minutes}:${seconds}`;
+}
+
+function startTimer(){
+
+    if(running) return;
+
+    running = true;
+
+    document.getElementById("timerCircle").style.transform =
+    "scale(1.03)";
+
+    timer = setInterval(()=>{
+
+        timeLeft--;
+
+        updateTimer();
+
+        if(timeLeft <= 0){
+
+            clearInterval(timer);
+
+            running = false;
+
+            sessions++;
+
+            document.getElementById("sessions").innerText =
+            sessions;
+
+            document.getElementById("timerCircle").style.transform =
+            "scale(1)";
+
+            alert("Pomodoro Session Complete 🎉");
+            fetch("/complete_session",{
+            method:"POST"
+            })
+            .then(()=>load());
+            timeLeft = 1500;
+
+            updateTimer();
+        }
+
+    },1000);
+}
+
+function pauseTimer(){
+
+    clearInterval(timer);
+
+    running = false;
+
+    document.getElementById("timerCircle").style.transform =
+    "scale(1)";
+}
+
+function resetTimer(){
+
+    clearInterval(timer);
+
+    running = false;
+
+    timeLeft = 1500;
+
+    updateTimer();
+
+    document.getElementById("timerCircle").style.transform =
+    "scale(1)";
+}
+function setCustomTimer(){
+
+    let mins = parseInt(
+        document.getElementById("customMinutes").value
+    );
+
+    if(!mins || mins <= 0){
+
+        alert("Enter valid minutes");
+
+        return;
+    }
+
+    clearInterval(timer);
+
+    running = false;
+
+    timeLeft = mins * 60;
+
+    updateTimer();
+
+    document.getElementById("timerCircle").style.transform =
+    "scale(1)";
+}
+function searchTasks(){
+
+    let input =
+    document.getElementById("taskSearch")
+    .value
+    .toLowerCase();
+
+    let tasks =
+    document.querySelectorAll(".task");
+
+    tasks.forEach(task=>{
+
+        let text =
+        task.innerText.toLowerCase();
+
+        if(text.includes(input)){
+
+            task.style.display="flex";
+
+        }else{
+
+            task.style.display="none";
+        }
+    });
+}
+function renderTimetable(){
+
+    let data = window.fullTimetable;
+
+    if(!data || data.length === 0) return;
+
+    let row = data[currentDay];
+
+    document.getElementById("dayTitle").innerText =
+    row.day;
+
+    let timetableHTML = `
+
+    <div class="timetable-grid">
+
+        <div class="timetable-header">
+            Session
+        </div>
+
+        <div class="timetable-header">
+            Subject
+        </div>
+
+        <div class="timetable-header">
+            Duration
+        </div>
+
+        <div class="timetable-header">
+            Priority
+        </div>
+    `;
+
+    row.slots.forEach(slot=>{
+
+        timetableHTML += `
+
+        <div class="timetable-cell">
+            ${slot.type}
+        </div>
+
+        <div class="timetable-cell">
+            ${slot.subject}
+        </div>
+
+        <div class="timetable-cell">
+            ⏳ ${slot.hours} Hours
+        </div>
+
+        <div class="timetable-cell">
+
+            <div class="
+            subject-tag
+            ${slot.priority.toLowerCase()}
+            ">
+                ${slot.priority}
+            </div>
+
+        </div>
+        `;
+    });
+
+    timetableHTML += `</div>`;
+
+    document.getElementById("timetable")
+    .innerHTML = timetableHTML;
+}
+
+function changeDay(direction){
+
+    if(!window.fullTimetable ||
+       window.fullTimetable.length === 0){
+
+        return;
+    }
+
+    currentDay += direction;
+
+    if(currentDay < 0){
+
+        currentDay =
+        window.fullTimetable.length - 1;
+    }
+
+    if(currentDay >= window.fullTimetable.length){
+
+        currentDay = 0;
+    }
+
+    renderTimetable();
+
+    let html = "";
+
+    window.currentTasks
+    .filter(x => x.day === weekDays[currentDay])
+    .slice(0, 3)
+    .forEach((x)=>{
+
+        html += `
+
+        <div class="task">
+
+            <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            gap:12px;
+            width:100%;
+            ">
+            <div>
+
+    <input
+
+    type="checkbox"
+
+    ${x.completed ? "checked" : ""}
+
+    onchange="toggleByTime('${x.created_at}')"
+
+    style="
+    width:24px;
+    height:24px;
+    cursor:pointer;
+    accent-color:#3b82f6;
+    ">
+
+</div>
+                <div>
+
+                    <div style="
+                    font-size:26px;
+                    font-weight:700;
+                    color:#60a5fa;
+                    margin-bottom:10px;
+                    ">
+                        ${x.day}
+                    </div>
+
+                    <div style="
+                    font-size:22px;
+                    font-weight:600;
+                    margin-bottom:10px;
+                    ">
+                        ${x.subject}
+                    </div>
+
+                    <div class="
+                    subject-tag
+                    ${x.priority.toLowerCase()}
+                    ">
+                    ${x.priority}
+                    </div>
+
+                    <div style="
+                    margin-top:14px;
+                    color:#94a3b8;
+                    line-height:1.8;
+                    ">
+
+                        ⏳ ${x.hours} Hours
+
+                        <br>
+
+                        📘 ${x.type}
+
+                        <br>
+
+                        🔥 ${x.difficulty || "Medium"}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        `;
+    });
+
+    document.getElementById("tasks").innerHTML =
+    html;
+
+}
+window.onload=load;
+
+</script>
+
+
+{% endblock %}

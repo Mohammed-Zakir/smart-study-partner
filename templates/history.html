@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}History — SmartDocQA{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">History</h1>
+    <p class="page-subtitle">All past queries and uploaded documents.</p>
+</div>
+
+<div class="section-label">Query History ({{ queries|length }})</div>
+{% if queries %}
+<div class="card">
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr><th>#</th><th>Question</th><th>Answer</th><th>Asked At</th><th></th></tr>
+            </thead>
+            <tbody>
+                {% for q in queries %}
+                <tr>
+                    <td>{{ q[0] }}</td>
+                    <td class="td-question">{{ q[1] }}</td>
+                    <td class="td-answer">{{ q[2] }}</td>
+                    <td class="td-date">{{ q[3] }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('history_bp.delete_query', query_id=q[0]) }}"
+                              onsubmit="return confirm('Delete this query?')">
+                            <button type="submit" class="btn-delete" title="Delete">&#x2715;</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="empty-state"><p>No queries yet. <a href="{{ url_for('query_bp.home') }}">Ask something!</a></p></div>
+{% endif %}
+
+<div class="section-label" style="margin-top:2rem;">Documents ({{ documents|length }})</div>
+{% if documents %}
+<div class="card">
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr><th>#</th><th>File Name</th><th>Uploaded At</th><th></th></tr>
+            </thead>
+            <tbody>
+                {% for doc in documents %}
+                <tr>
+                    <td>{{ doc[0] }}</td>
+                    <td><span class="doc-icon-sm">&#128196;</span> {{ doc[1] }}</td>
+                    <td class="td-date">{{ doc[3] }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('history_bp.delete_document', doc_id=doc[0]) }}"
+                              onsubmit="return confirm('Delete this document record?')">
+                            <button type="submit" class="btn-delete" title="Delete">&#x2715;</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="empty-state"><p>No documents uploaded yet.</p></div>
+{% endif %}
+{% endblock %}
